@@ -17,6 +17,12 @@ import (
 
 func ledgerConfig() *ledger.Config {
 	// set defaults
+
+	// TODO: Insert dynamic config: couchDBConfig -> core.yaml.
+	// Get stateDatabase environment variable and create dynamic variable "dbConfig" as stateDatabase[0].lower + stateDatabase[1:] + Config
+	// Substitute "couchDBConfig" string with "dbConfig" variable
+	// Use "dbConfig" variable in all configurations
+
 	internalQueryLimit := 1000
 	if viper.IsSet("ledger.state.couchDBConfig.internalQueryLimit") {
 		internalQueryLimit = viper.GetInt("ledger.state.couchDBConfig.internalQueryLimit")
@@ -82,6 +88,15 @@ func ledgerConfig() *ledger.Config {
 			RedoLogPath:           filepath.Join(ledgersDataRootDir, "couchdbRedoLogs"),
 			UserCacheSizeMBs:      viper.GetInt("ledger.state.couchDBConfig.cacheSize"),
 		}
-	}
+	} else if conf.StateDBConfig.StateDatabase == ledger.Elasticsearch {
+        conf.StateDBConfig.Elasticsearch = &ledger.ElasticsearchConfig{
+            Address:                viper.GetString("ledger.state.elasticsearchConfig.address"),
+            Port:                   viper.GetString("ledger.state.elasticsearchConfig.port"),
+            Username:               viper.GetString("ledger.state.elasticsearchConfig.username"),
+            Password:               viper.GetString("ledger.state.elasticsearchConfig.password"),
+            DbName:                 viper.GetString("ledger.state.elasticsearchConfig.dbName"),
+        }
+    }
+
 	return conf
 }
