@@ -74,6 +74,7 @@ func ledgerConfig() *ledger.Config {
 		},
 	}
 
+    // TODO: do a switch statement instead of if-else-if
 	if conf.StateDBConfig.StateDatabase == ledger.CouchDB {
 		conf.StateDBConfig.CouchDB = &ledger.CouchDBConfig{
 			Address:               viper.GetString("ledger.state.couchDBConfig.couchDBAddress"),
@@ -97,6 +98,8 @@ func ledgerConfig() *ledger.Config {
             DbName:                 viper.GetString("ledger.state.elasticsearchConfig.dbName"),
         }
     }
+
+    // TODO: Print conf to check the configurations
 
 	return conf
 }
